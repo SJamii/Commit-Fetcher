@@ -3,11 +3,11 @@ name: Docker Build and Push
 on:
   push:
     branches:
-      - main  # Runs the workflow when changes are pushed to the 'main' branch
+      - main
 
 jobs:
   build-and-push:
-    runs-on: ubuntu-latest  # Use the latest Ubuntu runner
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
@@ -16,8 +16,14 @@ jobs:
       - name: Log in to Docker Hub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
+      - name: Debug Docker Username
+        run: echo "Docker username: ${{ secrets.DOCKER_USERNAME }}"
+
       - name: Build the Docker Image
         run: docker build -t my-python-app .
+
+      - name: Check Docker Tag Formatting
+        run: echo "Tagging image as: ${{ secrets.DOCKER_USERNAME }}/my-python-app:latest"
 
       - name: Tag the Docker Image
         run: docker tag my-python-app ${{ secrets.DOCKER_USERNAME }}/my-python-app:latest
